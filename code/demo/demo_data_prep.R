@@ -45,6 +45,13 @@ df_myes <- mutate(df_myes,
     age >= 25 & age <= 44 ~ "25-44",
     age >= 45 & age <= 64 ~ "45-64",
     age >= 65 ~ "65plus"
+  ),
+  age_grp_5 = case_when(
+    age <= 24 ~ "0-24",
+    age >= 25 & age <= 44 ~ "25-44",
+    age >= 45 & age <= 64 ~ "45-64",
+    age >= 65 & age <= 84 ~ "65-84",
+    age >= 85 ~ "85plus"
   )
 )
 
@@ -87,6 +94,13 @@ df_mye_latest_year_agegrp_gend <- df_myes %>%
   group_by(age_group, gender) %>%
   summarize(pop_total = sum(population_estimate))
 
+# latest_year pop with 5 age groups and gender
+df_mye_latest_year_5_age_grps_sex <- df_myes %>%
+  filter(mid_year_ending == latest_year & gender != "All persons") %>%
+  group_by(age_grp_5, gender) %>%
+  summarize(pop_total = sum(population_estimate))
+
+
 # add pct col
 df_latest_year_agegrp_gend_pct <- df_mye_latest_year_agegrp_gend %>%
   group_by(age_group) %>%
@@ -105,6 +119,13 @@ df_mye_latest_year_agegroup <- df_myes %>%
   group_by(age_group) %>%
   summarize(agegroup_total = sum(population_estimate)) %>%
   mutate(age_group = gsub("-", " to ", age_group))
+
+# latest year in 5 age groups for pie chart
+df_mye_latest_5_agegroups <- df_myes %>%
+  filter(mid_year_ending == latest_year & gender == "All persons") %>%
+  group_by(age_grp_5) %>%
+  summarize(agegroup_total = sum(population_estimate)) %>%
+  mutate(age_group = gsub("-", " to ", age_grp_5))
 
 # latest_year tot pop by LGD
 df_mye_latest_year_lgd <- df_myes %>%
@@ -305,39 +326,45 @@ df_fig6_xls <- pivot_wider(df_mye_latest_year_agegrp_gend,
   rename("Age group" = age_group)
 
 # tidy names for chart download
-df_fig7_xls <- bind_rows(df_latest_year_gender, df_earliest_year_gender) %>%
+df_fig8_xls <- bind_rows(df_latest_year_gender, df_earliest_year_gender) %>%
   rename(
     "Mid year ending" = mid_year_ending,
     "Gender" = gender,
     "Population" = mye_pop
   )
 
-# construct df for basic treemap fig 8
-df_fig8 <- df_mye_latest_year_agegrp_gend %>%
+# fig 7 for download 
+df_fig7_xls <- df_mye_latest_5_agegroups %>% 
+  select(age_group, agegroup_total) %>% 
+  rename("Age Group" = age_group,
+         "Population" = agegroup_total)
+
+# construct df for basic treemap fig 9
+df_fig9 <- df_mye_latest_year_5_age_grps_sex %>%
   filter(gender == "Females") %>%
   ungroup()
 
-ni_female_latest_tot <- sum(df_fig8$pop_total)
+ni_female_latest_tot <- sum(df_fig9$pop_total)
 
-df_fig8 <- df_fig8 %>%
-  add_row(age_group = "", gender = "NI", pop_total = ni_female_latest_tot)
+df_fig9 <- df_fig9 %>%
+  add_row(age_grp_5 = "", gender = "NI", pop_total = ni_female_latest_tot)
 
 # modify for download buttons
-df_fig8_xls <- df_fig8 %>%
+df_fig9_xls <- df_fig9 %>%
   rename(
-    "Age group" = age_group,
+    "Age group" = age_grp_5,
     "Gender" = gender,
     "Population total" = pop_total
   )
 
-# construct df for nested treemap fig 9
-df_fig9 <- df_mye_latest_year_agegrp_gend %>%
+# construct df for nested treemap fig 10
+df_fig10 <- df_mye_latest_year_agegrp_gend %>%
   ungroup()
-df_fig9 <- df_fig9[order(df_fig9$gender), ] %>%
+df_fig10 <- df_fig10[order(df_fig10$gender), ] %>%
   select(2, 1, 3)
 
 # modify for download buttons
-df_fig9_xls <- df_fig9 %>%
+df_fig10_xls <- df_fig10 %>%
   rename(
     "Gender" = gender,
     "Age group" = age_group,
@@ -345,13 +372,13 @@ df_fig9_xls <- df_fig9 %>%
   )
 
 # fig 10 download
-fig10_xls <- df_mye_latest_year_agegroup %>%
+fig11_xls <- df_mye_latest_year_agegroup %>%
   mutate(agegrp_pct = round_half_up((agegroup_total /
     sum(agegroup_total) * 100), 1)) %>%
   rename(
     "Age group" = age_group, "Age group total" = agegroup_total,
     "Age group percent" = agegrp_pct
-  )
+  ) 
 
 #### Mini charts data frame creation for Key Points ####
 
@@ -384,14 +411,14 @@ minichart_population <- ggplot(
 ) +
   geom_bar(
     stat = "identity", # creates bar chart
-    fill = c(ons_blue, ons_green)
+    fill = c(nisra_navy, nisra_blue)
   ) + # colours for bars
   ggtitle("NI Population") +
   xlab("") +
   ylab("") +
   # creates chart title and removes x and y axis labels
   geom_text(aes(label = format(ni_pop_total, big.mark = ",")),
-    color = c("white", "black"),
+    color = c("white", "white"),
     vjust = 1.5, size = 6
   ) +
   # adds value labels to the bars and sets colours so they meet contrast

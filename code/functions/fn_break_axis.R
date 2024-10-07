@@ -1,4 +1,3 @@
-library(plotly)
 
 # This function will insert a broken axis symbol on the y axis when called.
 # It takes three arguments:

@@ -23,28 +23,30 @@ Users can choose to write all chapters of their report within the `report.Rmd` f
 
 Note that although the RAP Skeleton template only provides the main `report.Rmd` file, the RAP Skeleton demo HTML is constructed using multiple child `.Rmd` files as different chapters. Users wanting to divide different chapters into multiple child `.Rmd` files should follow the instructions found later in this documentation. 
 
-## Downloading the RAP Skeleton.
+## Downloading the RAP Skeleton
+This code should run on most recent versions of RStudio but will need R 4.4.0 or later to run package installations correctly. If you do not have this, R 4.4.0 is available from the IT Assist Store.
+
 In order to work with the RAP Skeleton the project folder must first be downloaded onto your local computer. Follow these steps to complete this process: 
 
-- Download the RAP Skeleton as a ZIP file by clicking on the ‘Source code (zip)’ link under the ‘Assets’ tab on the [latest releases page](https://github.com/NISRA-Tech-Lab/rap-skeleton/releases). The file will be downloaded to the ‘Downloads’ folder on your PC. 
+- Download the RAP Skeleton as a ZIP file by clicking on the ‘Source code (zip)’ link under the ‘Assets’ tab on the [latest releases page](https://github.com/NISRA-Tech-Lab/rap-skeleton/releases). The file will be downloaded to the ‘Downloads’ folder on your PC.
 
-- Open your ‘Downloads’ folder using Windows Explorer and extract the Rap Skeleton contents by right-clicking on the ZIP file and selecting ‘Extract All’.  
+- Open your ‘Downloads’ folder using Windows Explorer and extract the RAP Skeleton contents by right-clicking on the ZIP file and selecting ‘Extract All’.  
 
-- The RAP Skeleton will be contained within a folder with a name such as `rap-skeleton-2.0`. Choose an appropriate location to save this folder e.g. your desktop. 
+- The RAP Skeleton will be contained within a folder with a name `rap-skeleton-`, followed by some numeric version numbers eg. `rap-skeleton-1.0`. In this README this will be referred to as `rap-skeleton-x.x`. Choose an appropriate location to save this folder e.g. your desktop. 
 
 
-## Understanding the RAP Skeleton folder structure.
-Once downloaded and extracted, you are now able to view the files and folders within the `rap-skeleton-2.0` folder. 
+## Understanding the RAP Skeleton folder structure
+Once downloaded and extracted, you are now able to view the files and folders within the `rap-skeleton-x.x` folder. 
   
 Note:  
 
-- `rap-skeleton.Rproj` (rap-skeleton-2.0/rap-skeleton.Rproj) is the main R project file for the Rap Skeleton. Always open this R project file first when working on any element of your report. 
+- `rap-skeleton.Rproj` (rap-skeleton-x.x/rap-skeleton.Rproj) is the main R project file for the RAP Skeleton. Always open this R project file first when working on any element of your report. 
 
-- `report.Rmd` (rap-skeleton-2.0/code/report.Rmd) is the RMarkdown file that will be knitted to produce your HTML report. 
+- `report.Rmd` (rap-skeleton-x.x/code/report.Rmd) is the RMarkdown file that will be knitted to produce your HTML report. 
 
-- `demo_report.Rmd` (rap-skeleton-2.0/code/demo/demo_report.Rmd) is the RMarkdown file that will be knitted to produce the demo HTML report. 
+- `demo_report.Rmd` (rap-skeleton-x.x/code/demo/demo_report.Rmd) is the RMarkdown file that will be knitted to produce the demo HTML report. 
 
-- Everything relating to the demo report is stored inside the `demo` folder (`rap-skeleton-2.0/code/demo/`). The entire `demo` folder can be deleted if it is not required. 
+- Everything relating to the demo report is stored inside the `demo` folder (`rap-skeleton-x.x/code/demo/`). The entire `demo` folder can be deleted if it is not required. 
 
 The following table lists the RAP Skeleton contents and their purpose:
 
@@ -65,28 +67,48 @@ The following table lists the RAP Skeleton contents and their purpose:
 | Demo  | `code/demo/demo_data/`  | Raw data for the demo is stored here |
 | Demo  | `code/demo/demo_outputs/` | Demo HTML and Excel outputs will be saved here |
 
-## Initialising Renv.
-Upon opening the `rap-skeleton.Rproj` file for the first time you may see the following `Renv` warning appear in the console of R studio:
+## Renv
 
-![Renv warning](data/images/renv_error.png)
+### Initialisation
 
-`Renv` is used to lock the current version of the packages within the RAP Skeleton so that any future package updates do not cause any issues with running code. `Renv` only needs to be activated once at the start of each Rap Skeleton project and it will attempt to automatically activate - the above warning is a sign that this automatic activation has failed and must be activated manually. Once `Renv` has been activated manually the above warning will disappear.
+`Renv` is used to lock the current version of the packages within a RAP Skeleton project so that any future users can directly recreate the results and outputs using the same renv specification. `Renv` only needs to be activated once at the start of each RAP Skeleton project and it will attempt to automatically activate when you open the project.
 
-To manually activate `Renv`, run the following lines of code one at a time in the console:
+Upon opening the `rap-skeleton.Rproj` file for the first time you should see a message in the console similar to:
 
-- `source("renv/activate.R")`
+```
+# Bootstrapping renv 1.0.7 ---------------------------------------------------
+- Downloading renv ... OK
+- Installing renv  ... OK
 
-- `renv::restore()` 
+- Project 'C:/.../34-rap-skeleton/rap-skeleton-dev' loaded. [renv 1.0.7]
+- One or more packages recorded in the lockfile are not installed.
+- Use `renv::status()` for more details.
+```
+Next open the `renv_setup.R` script and follow the steps within titled `renv::restore()` and `renv::status()`. If successful, renv should now be activated and all required packages should be available.
 
-- After running `renv::restore()` press 'y' to accept.
+When setting up renv within this project, you may see error lines printed to console similar to: 
+```
+renv was unable to query available packages from the following repositories: 
+- # file:////pr-clus-vfpdfp/DOF_NISRA_R_Packages/production/src/contrib --------
+```
+These do not affect the setup of the project and can be ignored
 
-If you did not see the above warning the first time you opened the `rap-skeleton.Rproj` file, it means that `Renv` was able to activate automatically. In this case, there is no need to run `source("renv/activate.R")`. Instead just run `renv::restore()` and press `y` to accept.   
-
-At this stage `Renv` has been activated. For further information visit the [Renv website.](https://rstudio.github.io/renv/index.html)
 
 ### Help & Troubleshooting
 
-If the above commands do not appear to work or error message appear, read more about troubleshooting renv in our [R Documentation](https://datavis.nisra.gov.uk/techlab/drpvze/r.html#renv_troubleshooting) 
+If the above steps do not appear to work or error messages appear, read more about troubleshooting renv in our [R Documentation](https://datavis.nisra.gov.uk/techlab/drpvze/r.html#renv_troubleshooting) 
+
+For further information on this package, visit the [Renv website.](https://rstudio.github.io/renv/index.html)
+
+### Continuing development within Renv
+
+This version of the RAP Skeleton points to an internal Tech Lab repository of packages called the TLCRAN, which is called upon in the above setup. However if you need to develop further with your project, and add new packages, follow the instructions under the title `renv::install() and renv::snapshot()` in the `renv_setup.R` script.
+
+### Git and renv
+
+Renv projects work best with git integration as they are built upon the idea that all users will be working from a local copy of the code base. If you are not using git, you cannot work from a shared copy of the code on a shared drive, for example, as only one local user can be configured at one time on a renv project.
+
+To allow renv to work without git, you will need individual local copies of the code for each user and one central shared copy that is updated as the project develops. Any changes to the central code will need to be manually copied to local users periodically.
 
 
 ## What next?
@@ -103,11 +125,7 @@ It is recommended that first-time users of the RAP Skeleton knit the demo report
 ## Knit the demo HTML report.
 Knitting the `demo_report.Rmd` file will produce the demo HTML report. Follow these steps to produce the demo HTML report:
 
-- Using your Windows file explorer, navigate to the `rap-skeleton-2.0` folder and open it.
-
--	Double-click the `rap-skeleton.Rproj` file to open the RAP Skeleton R project (`rap-skeleton-2.0/rap-skeleton.Rproj`).
-
--	Once R Studio has opened the R project, open the `demo_report.Rmd` file by selecting it under the `Files` tab in the bottom right quadrant of R Studio (`code/demo/demo_report.Rmd`).
+- Open the `demo_report.Rmd` file by selecting it under the `Files` tab in the bottom right quadrant of R Studio (`code/demo/demo_report.Rmd`).
 
 -	Press ‘knit’ at the top of the `demo_report.Rmd` window (or Ctrl+Shift+K).
 
@@ -119,7 +137,7 @@ Before creating an HTML report with the RAP Skeleton template, users should fami
 There is not a set workflow for using the RAP Skeleton, however, the following steps are an example workflow that could be suitable for many reports:
 
 - Rename these files and folders to something appropriate E.g. the name of your publication:
-    - `rap-skeleton-2.0` (main folder)
+    - `rap-skeleton-x.x` (main folder)
     
     - `rap-skeleton.Rproj` (R project file)
     
@@ -250,7 +268,7 @@ The previously released Accessibility Template Exemplar has now been superseded 
 
 - If your report requires any additional packages then ensure they are added to the package list in the `config.R` file using the `library` function. Also follow these two additional steps in the R Studio console:
 
-    - Run `renv::snapshot()` to update th renv lockfile with your additional packages.
+    - Run `renv::snapshot()` to update the renv lockfile with your additional packages.
     - Run `renv::restore()` to install any of these additional packages.
 
 - Copy any additional functions that you may have created into the `functions` folder.
@@ -263,8 +281,8 @@ The previously released Accessibility Template Exemplar has now been superseded 
 
 - Copy across the content of the report into the `report.Rmd` file or modularise the report by implementing chapters with child .Rmd files.
     
-## Updating to V2 from Rap Skeleton V1
-The file structure of RAP Skeleton V2 is identical to V1 and works in a similar fashion. It is recommended that any reports created using V1 are now updated to Rap Skeleton V2.  You should copy your content out of your V1 report and put it into V2 rather than try to pull the additional features from V2 into V1. Follow these basic steps:
+## Updating to V2 from RAP Skeleton V1
+The file structure of RAP Skeleton V2 is identical to V1 and works in a similar fashion. It is recommended that any reports created using V1 are now updated to RAP Skeleton V2.  You should copy your content out of your V1 report and put it into V2 rather than try to pull the additional features from V2 into V1. Follow these basic steps:
 
 - Edit the `config.R` file to set all required variables.
 
@@ -287,7 +305,7 @@ It is recommended that you store the R project for your HTML report in a Github 
 #### Git prerequisites
 Before attempting to store your R project on Github you must first:
 
-- Ensure your R project folder is named something appropriate (e.g. `01-doj-newpublication`) and is no longer called `rap-skeleton-2.0`.
+- Ensure your R project folder is named something appropriate (e.g. `01-doj-newpublication`) and is no longer called `rap-skeleton-x.x`.
 
 - Ensure IT Assist have installed 'Git for Windows' on your computer (remembering to install this on all new staff machines and when changing to new machines). 
 
@@ -330,7 +348,8 @@ git push -u origin main
 
 - Refresh your repo on github.com again and you should see all the contents of your R project has now been pushed up to the repo.
 
-- Close your R studio project and re-open again. You should now see a ‘Git’ tab on the top right quadrant of the screen. 
+- Close your R studio project and re-open again. You should now see a ‘Git’ tab on the top right quadrant of the screen.
+ 
 
 
 

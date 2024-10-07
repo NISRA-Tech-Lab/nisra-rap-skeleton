@@ -169,6 +169,3 @@ f_contact <- function() {
   )
 }
 
-f_print_code <- function(c) {
-  pre(class = "r", code(class = "hljs", c))
-}

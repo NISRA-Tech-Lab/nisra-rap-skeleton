@@ -40,9 +40,9 @@ When it comes to accessibility, a good rule of thumb is to use a simple structur
 * use consistent rounding
 * left align text, or row labels, right align numbers
 * use thousand comma separator
-* avoid abbreviations or make sure they are explained fully
+* avoid abbreviations or make sure they are explained fully when first used
 * use caption for table titles
-* put any data labels in the headings such as % or millions or STG
+* put any data labels in the headings such as % or millions or STG rather than in all column cells
 * don't use symbols such as * or superscripts to create notes or explanations
 
 ### Basic table (h3)
@@ -213,3 +213,4 @@ t4 <- formattable(df_t4_html,
 t4
 ```
 
+Ensure sufficient contrast between background colours and the text when using colour scales.

@@ -172,11 +172,12 @@ nat_alt <- "Accredited Official Statistics logo"
 
 
 ##### COLOURS #####
+nisra_green_decoration <- "#CEDC20"
 nisra_blue <- "#3878c5"
 nisra_navy <- "#00205b"
-nisra_green <- "#CEDC20"
-nisra_lightblue <- "#d9e7ff"
-nisra_darkgreen <- "#474c00"
+nisra_col3_green <- "#68a41e" # needs black text
+nisra_col4_purple <- "#732777"
+nisra_col5_lilac <- "#ce70d2" # needs black text
 
 ons_blue <- "#12436d"
 ons_green <- "#28a197"

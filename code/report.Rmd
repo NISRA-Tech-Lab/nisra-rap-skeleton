@@ -20,9 +20,6 @@ knit: (function(input, ...) {
   })
 ---
 
-<!--Add tabs to table of contents-->
-<body onload = "tabOrder()">
-
 <div id = "cookie-banner"></div>
 <script src = "cookies_script.js"></script>
 
@@ -168,10 +165,10 @@ function tabOrder() {
 
   var headings = document.getElementsByClassName('tocify-item list-group-item');
   
-  for (var i=0; i<headings.length; i++) {
-    headings[i].innerHTML = "<a href='#'>" + headings[i].innerHTML +  "</a>";
+  for (let i = 0; i < headings.length; i ++) {
+    headings[i].innerHTML = "<a href='#" + headings[i].getAttribute("data-unique") + "'>" + headings[i].innerHTML +  "</a>";
   }
-  
+
 };
 
 // Instruct web browser to run above function when loaded

@@ -37,7 +37,8 @@ Considerations when creating charts:
 
 Accessibility
 
-* Do not rely on colour alone to convey information - ensure colour contrast ratios between chart elements and chart background is sufficient
+* Do not rely on colour alone to convey information; include data labels and be mindful of legends
+* Ensure colour contrast ratios between adjacent chart elements and against background is min 3:1
 * ONS recommend that you link to the raw data in csv or xls format or provide a way for users to request it
 * Chart titles should be descriptive. A main title and statistical subtitle should be used (e.g. main title 'Figure 1: The gender pay gap fell to 8.6% among full-time employees in 2018') and statistical subtitle should include statistical measure, geographic coverage and time period (e.g. 'Gender pay gap for median gross hourly earnings (excluding overtime), UK, April 1997 to 2019')
 * Charts should include a line of alt text (to include chart type, type of data used and summary of main trend); all detail should be in main text
@@ -46,7 +47,7 @@ Accessibility
 * Where abbreviations are included they should be in full, or explained in footnotes
 * Try to avoid a legend (especially if they rely on colour alone to convey meaning), but if legend is needed place above the chart
 * Where possible, charts should be created in HTML (i.e. interactive), and where not possible, in SVG image format (this exemplar contains examples of both)
-* Data included in charts should be clearly explained in text format around the chart
+* Main message(s) of charts should be clearly explained in text above or below the chart ( i.e. provide a clear text alternative)
 * Avoid using dual axis charts
 * Consider punctuation on labels of interactive charts and how a screen reader will vocalise them
 * Consider how charts will resize for different display sizes e.g. mobile, laptop or desktop; a message has been added for mobile users to suggest rotating phone to landscape for viewing charts
@@ -389,7 +390,7 @@ f_make_tables(
 
 This section includes a line chart with more than one series which are not overlapping. 
 
-Although these lines are not touching or crossing we have used colours that meet the contrast requirements for adjacent colours to help users perceive the difference. The dark blue and light blues meet the 3:1 contrast and the text for both of these colours meets the 4.5:1 contrast for text against the background.
+The navy and mid-blues meet the 3:1 contrast and the text for both of these colours meets the 4.5:1 contrast for text against the background. It is difficult to ensure sufficient contrast for more than 2 lines especially when they overlap or cross because the order in which they appear will change. 
 
 A static chart is used here so it views well on mobile as well as desktop. Annotations easily get crowded and overlap when resized and the chart resizes the x axis which alters how the trend is perceived.
 
@@ -939,7 +940,7 @@ config(fig6c, displayModeBar = FALSE)
 
 ###### Stacked horizontal bar (%) 
 
-```{r fig6d, echo = TRUE, fig.alt="Figure 6e alt text example. More detail on the trends are included in the text directly above or below the chart, and data can be downloaded using the button below", out.width="100%"}
+```{r fig6d, echo = TRUE, fig.alt="Figure 6d alt text example. More detail on the trends are included in the text directly above or below the chart, and data can be downloaded using the button below", out.width="100%"}
 # for stacked horizontal bar set orientation to "h" (horizontal)
 # and barmode to stack
 fig6d <- plot_ly(df_latest_year_agegrp_gend_pct,
@@ -996,19 +997,76 @@ fig6d <- plot_ly(df_latest_year_agegrp_gend_pct,
 config(fig6d, displayModeBar = FALSE)
 ```
 
+### Column Chart 5 Categories
+
+This chart has been included to show how the 5 colour palette can be used for categorical data. The order in which the colours are used is important as are the colours of the data labels on each and should be preserved. These can be used for fewer categories as long as the order is retained.
+
+#### Figure 7: Over 85s remain the smallest age group
+##### NI population in 2022 in 5 age bands
+
+```{r fig7, echo = TRUE, fig.alt="Figure 6e alt text example. More detail on the trends are included in the text directly above or below the chart, and data can be downloaded using the button below", out.width="100%"}
+
+yaxistitle <- list(
+   text = "Population",
+   x = 0.01, y = 1.05,
+   xref = "paper", yref = "paper",
+   xanchor = "right", yanchor = "top",
+   showarrow = FALSE,
+   font = list(size = 14))
+
+
+fig7 <- plot_ly(df_mye_latest_5_agegroups,
+                 x = ~age_grp_5,
+                 y = ~agegroup_total,
+                 type = "bar",
+                 marker = list(color = c(nisra_blue, nisra_navy, 
+                                         nisra_col3_green, nisra_col4_purple, nisra_col5_lilac)),
+                 # order of colours is important: need medium and dark colours beside one another
+                 text = ~format(agegroup_total, big.mark = ","),
+                 textfont = list(color = c("white", "white",
+                                           "black", "white", "black")),
+                 # need to specify black or white labels. plotly default is grey and fails contrast required
+                 textangle = "horizontal",
+                 hovertemplate = ~paste0(age_group, ": ", format(agegroup_total, big.mark = ","),
+                                         "<extra></extra>"),
+                hoverlabel = list(font = list(color = c("white", "white", "black", "white", "black")))) %>% 
+  layout(yaxis = list(title = "",
+                      tickformat = ",d"), # adds thousand separator
+         xaxis = list(title = "Age Group"),
+         annotations = list(yaxistitle))
+
+
+config(fig7, displayModeBar = FALSE)
+
+```
+
+```{r fig7_dl_buttons}
+f_make_tables(df_fig7_xls,
+  title = paste0(
+    "Figure 7: NI population by 5 age bands, ",
+    latest_year
+  ),
+  data_style = ns_comma,
+  data_dir = paste0(here(), "/code/demo/demo_outputs/", "figdata/")
+)
+
+
+```
+
+
 ### Pie chart (h3)
 
-Ensure that colour is not the only means of conveying meaning. Here value labels are added for alternative source of information. Borders are used to meet contrast requirements.
+Ensure that colour is not the only means of conveying meaning. Here value labels are added for alternative source of information.
 
 These pie charts have been placed in two columns so that when resized for mobile they will wrap one under the other and remain legible.
 
 Include descriptive text before or after the chart.
 
-#### Figure 7: Higher percentage of females than males in the over 65 age group in
+#### Figure 8: Higher percentage of females than males in the over 65 age group in
 ##### Percentage of NI population aged 65 plus by gender, `r latest_year`
 
-```{r piechart, echo = TRUE, fig.alt="Figure 7 alt text example. More detail on the trends are included in the text directly above or below the chart, and data can be downloaded using the button below"}
-fig7a <- plot_ly(df_mye_latest_over_under_65,
+```{r piechart, echo = TRUE, fig.alt="Figure 8 alt text example. More detail on the trends are included in the text directly above or below the chart, and data can be downloaded using the button below"}
+fig8a <- plot_ly(df_mye_latest_over_under_65,
   labels = ~age_65split,
   values = ~Females,
   type = "pie",
@@ -1023,11 +1081,10 @@ fig7a <- plot_ly(df_mye_latest_over_under_65,
   insidetextorientation = "horizontal",
   textinfo = "text",
   hoverinfo = "text",
-  # adds border to light blue to meet accessibility criteria
+  hoverlabel = list(font = list(color = c("black", "white"))), # hover font colour for contrast
   marker = list(
-    colors = c(nisra_lightblue, nisra_navy),
-    line = list(color = "black", width = 1)
-  ),
+    colors = c(nisra_col3_green, nisra_navy)),
+  textfont = list(color = c("black", "white")),
   showlegend = FALSE
 ) %>%
   config(displayModeBar = FALSE) %>%
@@ -1041,7 +1098,7 @@ fig7a <- plot_ly(df_mye_latest_over_under_65,
     font = list(family = "Arial", size = 14)
   )
 
-fig7b <- plot_ly(df_mye_latest_over_under_65,
+fig8b <- plot_ly(df_mye_latest_over_under_65,
   labels = ~age_65split,
   values = ~Males,
   type = "pie",
@@ -1055,10 +1112,8 @@ fig7b <- plot_ly(df_mye_latest_over_under_65,
   insidetextfont = list(size = 16),
   insidetextorientation = "horizontal",
   marker = list(
-    colors = c(nisra_lightblue, nisra_navy),
-    line = list(color = "black", width = 1)
-  ),
-  # adds border to light blue to meet accessibility criteria
+    colors = c(nisra_col3_green, nisra_navy)),
+  textfont = list(color = c("black", "white")), #plotly default is grey which is insufficient contrast
   showlegend = FALSE
 ) %>%
   config(displayModeBar = FALSE) %>%
@@ -1080,17 +1135,17 @@ div(
   class = "row",
   div(
     class = "col-sm-6", style = "margin-top: 10px;",
-    fig7a
+    fig8a
   ),
-  div(class = "col-sm-6", fig7b)
+  div(class = "col-sm-6", fig8b)
 )
 ```
 
-```{r figure7_dl_buttons}
+```{r figure8_dl_buttons}
 # download buttons
 f_make_tables(df_mye_latest_over_under_65,
   title = paste0(
-    "Figure 7: NI population under 65 and 65 plus by gender ",
+    "Figure 8: NI population under 65 and 65 plus by gender ",
     latest_year
   ),
   data_style = ns_comma,
@@ -1102,46 +1157,48 @@ f_make_tables(df_mye_latest_over_under_65,
 
 Tile size and value labels are sources of meaning in addition to colour in the treemap. Again, text must meet 4.5:1 contrast and adjacent colours 3:1.
 
-Borders are used around the tiles to ensure the contrast requirements are met. These are needed for NISRA green and the pale blue.
+Borders are used around the tiles to ensure the contrast requirements are met. All of these colours can be used against a white background for chart elements but because the tiles are adjacent to multiple colours, not all the contrasts are OK (green against NISRA mid-blue for example). In this instance, a white border is used around between the tiles.
 
 Include descriptive text before or after the chart.
 
-#### Figure 8: Larger differences in size in the female population are seen in the under 25s and over 65s
+#### Figure 9: Larger differences in size in the female population are seen in the under 25s and over 65s
 ##### Female population of NI by age group, `r latest_year`
 
-```{r treemap, echo = TRUE, warnings = FALSE, message = FALSE, fig.alt="Figure 8 alt text example. More detail on the trends are included in the text directly above or below the chart, and data can be downloaded using the button below", out.width="100%"}
-fig8 <- plot_ly(df_fig8,
+```{r treemap, echo = TRUE, warnings = FALSE, message = FALSE, fig.alt="Figure 9 alt text example. More detail on the trends are included in the text directly above or below the chart, and data can be downloaded using the button below", out.width="100%"}
+fig9 <- plot_ly(df_fig9,
   type = "treemap",
-  labels = ~age_group,
+  labels = ~age_grp_5,
   parents = ~gender,
   values = ~pop_total,
   # punctuated labels so that readers do not rely solely on colour
   # or shape to understand the chart and screen readers vocalise ok
   text = ~ paste0(
-    "Age ", age_group, ":",
+    "Age ", age_grp_5, ":",
     "\n", format(pop_total, big.mark = ",")
   ),
   textinfo = "text",
   hoverinfo = "text",
+  hoverlabel = list(font = list(color = c("white", "white", "black", "white", "black"))),
   branchvalues = "total",
-  # set tile colours and border to meet accessibility standards
+  # set tile colours, border and label colours to meet accessibility standards
   marker = list(
     colors = c(
-      nisra_navy, nisra_blue,
-      nisra_lightblue, nisra_green
+      nisra_blue, nisra_navy,
+      nisra_col3_green, nisra_col4_purple, nisra_col5_lilac
     ),
     line = list(color = "black", width = 1)
   ),
-  textfont = list(family = "Arial", size = 16)
+  textfont = list(family = "Arial", size = 16, color = c("white", "white", "black", "white", "black"))
+ 
 )
 
-config(fig8, displayModeBar = FALSE)
+config(fig9, displayModeBar = FALSE)
 ```
 
-```{r figure8_dl_buttons}
-f_make_tables(df_fig8_xls,
+```{r figure9_dl_buttons}
+f_make_tables(df_fig9_xls,
   title = paste0(
-    "Figure 8: Female population of NI by age group, ",
+    "Figure 9: Female population of NI by age group, ",
     latest_year
   ),
   data_style = ns_comma,
@@ -1151,9 +1208,9 @@ f_make_tables(df_fig8_xls,
   
 ### Treemap - Nested (3 levels) (h3)
 
-To demonstrate a more complex tree map with three levels of nesting and multiple tiles, a tree map (Figure 3) from the Economic and Labour Market Statistics report [Structure and Performance of the NI Economy 2018 and 2019](https://datavis.nisra.gov.uk/economy-and-labour-market/structure-of-the-ni-economy-2019.html) is shown below.  
+To demonstrate a more complex tree map with three levels of nesting and multiple tiles, a tree map (Figure 3) from the Economic and Labour Market Statistics report [Structure and Performance of the NI Economy 2018 and 2019](https://datavis.nisra.gov.uk/economy-and-labour-market/structure-of-the-ni-economy-2019.html) is shown below. These colours have not been checked for accessibility.
 
-#### Figure 9: Split of NI GVA by industry, `r df_sut_report_data$Value[1]` 
+#### Figure 10: Split of NI GVA by industry, `r df_sut_report_data$Value[1]` 
 
 ##### `r highest_gva_industry` accounted for the largest share of GVA {#Figure3 .tabset .tabset-pills}
 
@@ -1161,8 +1218,8 @@ To view the sub-industries in more detail by industry, click on the industry hea
 
 ###### `r df_sut_report_data$Value[1]`
 
-```{r Figure 9, out.width="100%"}
-fig9 <- plot_ly(
+```{r Figure 10, out.width="100%"}
+fig10 <- plot_ly(
   type = "treemap",
   labels = ~tmap_labels_9,
   parents = ~tmap_parents_9,
@@ -1188,14 +1245,14 @@ fig9 <- plot_ly(
   ) %>%
   config(displayModeBar = FALSE)
 
-fig9
+fig10
 ```
 
-```{r figure9_dl_buttons}
+```{r figure10_dl_buttons}
 f_make_tables(
   data = fig9_dl,
   title = paste0(
-    "Figure 9: Split of NI GVA by industry, ",
+    "Figure 10: Split of NI GVA by industry, ",
     df_sut_report_data$Value[1]
   ),
   data_style = ns_percent,
@@ -1205,8 +1262,8 @@ f_make_tables(
 
 ###### `r df_sut_report_data$Value[2]`
 
-```{r Figure 9prev, out.width="100%"}
-fig9prev <- plot_ly(
+```{r Figure 10prev, out.width="100%"}
+fig10prev <- plot_ly(
   type = "treemap",
   labels = ~tmap_labels_9prev,
   parents = ~tmap_parents_9prev,
@@ -1232,14 +1289,14 @@ fig9prev <- plot_ly(
   ) %>%
   config(displayModeBar = FALSE)
 
-fig9prev
+fig10prev
 ```
 
 ```{r figure9prev_dl_buttons}
 f_make_tables(
   data = fig9prev_dl,
   title = paste0(
-    "Figure 9: Split of NI GVA by industry, ",
+    "Figure 10: Split of NI GVA by industry, ",
     df_sut_report_data$Value[2]
   ),
   data_style = ns_percent,
@@ -1249,15 +1306,15 @@ f_make_tables(
 
 ### Donut chart (h3)
 
-This donut chart has 4 sections and ONS have devised a sequential colour scheme that can be used in visualisations like this where more colours are needed and the order can be preserved. It's important that these colours appear in order to retain required contrast.
+This donut chart has 4 sections. It's important that these colours appear in order to retain required contrast and the correct colour is used for the labels. The plotly default label colour is grey or white so these are set manually to ensure sufficient contrast. The default grey is too pale against the green.
 
 Keep labels short and concise when using plotly for donut so that labels remain visible on mobile.
 
-#### Figure 10: Under 25s largest age group in NI 
+#### Figure 11: Under 25s largest age group in NI 
 ##### NI population by age group `r latest_year` 
 
-```{r fig10 donut, echo = TRUE, warnings = FALSE, message = FALSE, fig.alt="Figure 10 alt text example. More detail on the trends are included in the text directly above or below the chart, and data can be downloaded using the button below", out.width="100%"}
-fig10 <- plot_ly(df_mye_latest_year_agegroup,
+```{r fig11 donut, echo = TRUE, warnings = FALSE, message = FALSE, fig.alt="Figure 11 alt text example. More detail on the trends are included in the text directly above or below the chart, and data can be downloaded using the button below", out.width="100%"}
+fig11 <- plot_ly(df_mye_latest_year_agegroup,
   type = "pie",
   labels = ~age_group,
   values = ~agegroup_total,
@@ -1276,18 +1333,17 @@ fig10 <- plot_ly(df_mye_latest_year_agegroup,
   textinfo = "text",
   # keeps labels horizontal
   insidetextorientation = "horizontal",
-  # use ons sequential colour palette
+  # specify colours in correct order. 
   marker = list(
     colors = c(
-      ons_blue, ons_green,
-      ons_red, ons_orange
+      nisra_blue, nisra_navy, nisra_col3_green, nisra_col4_purple
     ),
-    line = list(color = "black", width = 1)
+    line = list(color = "black", width = 1) # border required to ensure contrast between nisra blue and lilac
   ),
   # specify label colours to meet contrast standards
   textfont = list(
     family = "Arial",
-    color = c("white", "black", "white", "black"),
+    color = c("white", "white", "black", "white"),
     size = 14
   )
 ) %>%
@@ -1295,17 +1351,17 @@ fig10 <- plot_ly(df_mye_latest_year_agegroup,
     # legend removed for accessibility (relies on colour to be able to
     # understand it. Labels added to segments instead)
     showlegend = FALSE,
-    font = list(family = "Arial", size = 14)
+    font = list(family = "Arial", size = 12)
   )
 
 
-config(fig10, displayModeBar = FALSE)
+config(fig11, displayModeBar = FALSE)
 ```
 
 
-```{r figure10_dl_buttons}
-f_make_tables(fig10_xls,
-  paste0("Figure 10: NI population by age group ", latest_year),
+```{r figure11_dl_buttons}
+f_make_tables(fig11_xls,
+  paste0("Figure 11: NI population by age group ", latest_year),
   data_style = ns_comma,
   data_dir = paste0(here(), "/code/demo/demo_outputs/", "figdata/")
 )

@@ -649,7 +649,7 @@ ul.tocify-subheader.list-group {
 	top: 0;
 	left: 0;
 	width: 100%;
-	background-color:RGBA(26,25,68,0.95);
+	background-color: rgba(26,25,68,0.95);
 	color:#FFF;
 	padding: 10px;
 	text-align: left;
@@ -658,7 +658,7 @@ ul.tocify-subheader.list-group {
 }
 
 .cookies-infobar {
-background-color: rgb(26,25,68,0.95);
+background-color: rgba(26,25,68,0.95);
 color: #fff;
 width: 100%;
 left: 0;
@@ -718,7 +718,7 @@ a.cookies-infobar_btn, a.cookies-infobar_btn_reject, a.cookiesbarlink {
 	display: grid;
 	width: 100%;
 	grid-gap: 10px;
-	grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+	grid-template-columns: repeat( auto-fit, minmax(220px, 1fr) );
 	justify-content: stretch;
 	page-break-inside: avoid;
 }
